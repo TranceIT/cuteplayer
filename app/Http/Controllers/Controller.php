@@ -12,17 +12,19 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function index() {
-    	$login = '+79780290201';
-$password = 'A2je1k483819';
+    	$login = '---';
+$password = '---';
 $security_check_code = '97802902'; // если требуется 8 цифр номера телефона (по крайней мере у меня столько запросило). Например Ваш номер телефона 79123456789, то необходимо в переменную прописать промежуток от 7 до 89, то есть 91234567.
  
 $headers = array(
  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
  'content-type' => 'application/x-www-form-urlencoded',
- 'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36'
+ 'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36',
+ //'cookies' => 'h=1;s=1;l=4059553;p=a19b1f723aa5ba8418e4396de8324edaaca0ca6b9175e527e8d29;remixq_052986b9d8328564f9eb72b3eddb313d=afd30c390357cdc71d',
 );
  
 // получаем главную страницу
+
 $get_main_page = $this->post('https://vk.com', array(
  'headers' => array(
   'accept: '.$headers['accept'],
@@ -45,11 +47,27 @@ $post_auth = $this->post('https://login.vk.com/?act=login', array(
  ),
  'cookies' => $get_main_page['cookies']
 ));
+
+
+$get = $this->post('https://m.vk.com/wall-26914825_47538', array(
+  'headers' => array(
+   'accept: '.$headers['accept'],
+   'content-type: '.$headers['content-type'],
+   'user-agent: '.$headers['user-agent']
+  ),
+  'cookies' => $get_main_page['cookies']
+  //'cookies' => $headers['cookies']
+ ));
+
+print_r(iconv('windows-1251', 'utf-8', $get['content'])); die;
  
+ //print_r($post_auth['headers']); die;
 // получаем ссылку для редиректа после авторизации
-preg_match('/Location\: (.*)/s', $post_auth['headers'], $post_auth_location);
-//$post_auth_location = explode(' ', $post_auth_location[1]);
-print_r($post_auth_location); die;
+//preg_match('/Location\: (.*)/s', $post_auth['headers'], $post_auth_location);
+/*
+preg_match('/Location\: (.*) /s', $post_auth['headers'], $post_auth_location);
+$post_auth_location = explode("Strict-Transport-Security:", $post_auth_location[1]);
+
 //print_r($post_auth_location); die;
  
 if(!preg_match('/\_\_q\_hash=/s', $post_auth_location[0])) {
@@ -59,7 +77,8 @@ if(!preg_match('/\_\_q\_hash=/s', $post_auth_location[0])) {
 }
  
 // переходим по полученной для редиректа ссылке
-$get_auth_location = $this->post($post_auth_location[1], array(
+//$get_auth_location = $this->post($post_auth_location[1], array(
+$get_auth_location = $this->post($post_auth_location[0], array(
  'headers' => array(
   'accept: '.$headers['accept'],
   'content-type: '.$headers['content-type'],
@@ -78,6 +97,7 @@ $get_my_page = $this->getUserPage($my_page_id, $get_auth_location['cookies']);
 // если запрошена проверка безопасности
 if(preg_match('/act=security\_check/s', $get_my_page['headers'])) {
  preg_match('/Location\: (.*)/s', $get_my_page['headers'], $security_check_location);
+	//preg_match('/Location\: http\:\/\/vk.com\/login\.php(\S*) /s', $get_my_page['headers'], $security_check_location);
  
  // переходим на страницу проверки безопасности
  $get_security_check_page = $this->post('https://vk.com'.$security_check_location[1], array(
@@ -113,12 +133,13 @@ if(preg_match('/act=security\_check/s', $get_my_page['headers'])) {
  // также отображаем свою страницу, если нет проверки безопасности
  echo iconv('windows-1251', 'utf-8', $get_my_page['content']);
 }
+*/
 	}
 
 	public function getUserPage($id = null, $cookies = null) {
  global $headers;
  
- $get = $this->post('https://vk.com/wall-26914825_47538', array(
+ $get = $this->post('https://m.vk.com/wall-26914825_47538', array(
   'headers' => array(
    'accept: '.$headers['accept'],
    'content-type: '.$headers['content-type'],
@@ -152,13 +173,13 @@ public function post($url = null, $params = null) {
  }
  
  $result = curl_exec($ch);
- 
-//print_r($url);
-//echo "<br>";
+echo $url;
+var_dump($result);
+
 
  list($headers, $result) = explode("\r\n\r\n", $result, 4);
  
- preg_match_all('|Set-Cookie: (.*);|U', $headers, $parse_cookies);
+ preg_match_all('|Set-Cookie: (\S*);|U', $headers, $parse_cookies);
  
  $cookies = implode(';', $parse_cookies[1]);
  
@@ -166,5 +187,15 @@ public function post($url = null, $params = null) {
  
  return array('headers' => $headers, 'cookies' => $cookies, 'content' => $result);
 }
+
+	public function test()
+	{
+		$str = 'HTTP/1.1 302 Found Server: Apache Date: Thu, 09 Feb 2017 06:43:09 GMT Content-Type: text/html; charset=windows-1251 Content-Length: 0 Connection: keep-alive X-Powered-By: PHP/3.10517 Pragma: no-cache Cache-control: no-store P3P: CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT" Set-Cookie: h=1; expires=Wed, 07 Feb 2018 23:39:57 GMT; path=/; domain=login.vk.com; HttpOnly Set-Cookie: s=1; expires=Fri, 09 Feb 2018 04:03:05 GMT; path=/; domain=login.vk.com; secure; HttpOnly Set-Cookie: l=4059553; expires=Tue, 13 Feb 2018 20:24:16 GMT; path=/; domain=login.vk.com; secure; HttpOnly Set-Cookie: p=d497a61ca9499767becdc648545e2ec05e79e0ee301bcd24b81b8; expires=Thu, 08 Feb 2018 17:39:58 GMT; path=/; domain=login.vk.com; secure; HttpOnly Set-Cookie: remixq_3ef425c3dfc8c233a5b5374005077b41=9729896068e052b8e7; path=/; domain=.vk.com; HttpOnly Location: http://vk.com/login.php?act=slogin&to=&s=1&__q_hash=3ef425c3dfc8c233a5b5374005077b41 Strict-Transport-Security: max-age=15768000';
+
+		preg_match("/Location\: http\:\/\/vk.com\/login\.php(\S*) /s", $str, $str2);
+
+		print_r($str2); die;
+	}
+
 }
 

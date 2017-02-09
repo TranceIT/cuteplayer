@@ -11,4 +11,6 @@
 |
 */
 
-Route::get('/', 'Application\IndexController@index');
+Route::get('/', 'Controller@index');
+
+Route::get('/test', 'Controller@test');
