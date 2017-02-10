@@ -2,6 +2,7 @@
 VK.init({
     apiId: 5536088,
 });
+alert("asd");
 /*
 var groupId = 0;
 
