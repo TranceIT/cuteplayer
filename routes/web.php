@@ -11,6 +11,10 @@
 |
 */
 
-Route::get('/', 'Controller@index');
+// Main App
+Route::get('/', 'Application\IndexController@index');
+Route::get('/getTrack', 'Application\IndexController@getTrack');
+Route::get('/second', 'Application\IndexController@index2');
 
-Route::get('/test', 'Controller@test');
+// Ajax
+Route::get('/soundCloudUrl', 'SoundEngine\SoundCloudController@getClientId');
