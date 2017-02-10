@@ -356,8 +356,7 @@ figure {
   font-size: 25px;
   font-size: 1.6rem;
   margin: 0 auto;
-  max-width: 100%;
-  padding: 0 1.25em;
+  width: 100%;
 }
 .jp-audio a {
   color: #d2d6db;
@@ -384,7 +383,7 @@ figure {
 }
 @media (min-width: 480px) {
   .jp-audio {
-    max-width: 25em;
+    width: 100%;
   }
   .jp-interface {
     border-radius: 3px;
@@ -396,6 +395,7 @@ figure {
   float: left;
 }
 .jp-play,
+.jp-show-playlist,
 .jp-mute {
   background: transparent;
   border: 0;
@@ -417,6 +417,7 @@ figure {
   width: 2.125em;
 }
 .jp-play:before,
+.jp-show-playlist:before,
 .jp-mute:before {
   font-size: 25px;
   font-size: 1.6rem;
@@ -430,6 +431,7 @@ figure {
   text-indent: 0;
 }
 .jp-play:hover,
+.jp-show-playlist:hover,
 .jp-mute:hover {
   color: #ffffff;
 }
@@ -437,6 +439,11 @@ figure {
   content: "\f152";
   text-indent: 0.1875em;
 }
+
+.jp-show-playlist:before {
+  content: "\f153";
+}
+
 .jp-mute:before {
   content: "\f159";
 }
@@ -456,7 +463,7 @@ figure {
   height: 1.875em;
   padding: 0.75em;
   position: relative;
-  width: calc(100% - 115px);
+  width: calc(100% - 102px);
 }
 .jp-time-rail:before,
 .jp-time-rail:after {
@@ -546,6 +553,7 @@ figure {
   font-size: 19px;
   font-size: 1.2rem;
   margin: 0 auto;
+  display: none;
 }
 .jp-playlist a {
   display: block;

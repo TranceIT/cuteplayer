@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	
+
     playlist = new jPlayerPlaylist({
         jPlayer: '#jquery_jplayer_1',
         cssSelectorAncestor: '#jp_container_1'
@@ -14,4 +14,9 @@ $(document).ready(function(){
         autoBlur: false,
         keyEnabled: true
     });
+
+    $(".jp-show-playlist").click(function(){
+        $(".jp-playlist").slideToggle();
+    });
+
 });
